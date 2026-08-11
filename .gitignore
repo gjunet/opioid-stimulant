@@ -6,10 +6,10 @@ data/derived/*.csv
 # All results are generated locally and are not part of the public code repo.
 output/
 logs/
+tmp/
 
 # Local runtime artifacts
 .Rhistory
 .RData
 .DS_Store
 *.pdf
-pandoc-header.tex

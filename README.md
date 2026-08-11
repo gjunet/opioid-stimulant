@@ -47,6 +47,19 @@ STIM_OPIOID_OUTPUT_DIR
 
 Outputs are written to `output/tables/`, diagnostics to `output/diagnostics/`, and timestamped logs to `logs/`.
 
+## Rendering the data dictionary as PDF
+
+Pandoc and a LaTeX installation with XeLaTeX are required. From the repository root, run:
+
+```sh
+pandoc DATA_DICTIONARY.md \
+  --include-in-header=pandoc-header.tex \
+  --pdf-engine=xelatex \
+  -o DATA_DICTIONARY.pdf
+```
+
+The condition table uses short display labels so its first column wraps correctly in LaTeX. Exact R variable names appear in a full-width list immediately after the table.
+
 ## Analysis sequence
 
 1. `scripts/01_build_analysis_data.R` codes the inclusive and restricted drug definitions, the separate cocaine and other-psychostimulant indicators, demographics, and outcomes.
