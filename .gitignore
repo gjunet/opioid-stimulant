@@ -1,0 +1,15 @@
+# Restricted and derived record-level mortality data
+data/raw/*.rds
+data/derived/*.rds
+data/derived/*.csv
+
+# All results are generated locally and are not part of the public code repo.
+output/
+logs/
+
+# Local runtime artifacts
+.Rhistory
+.RData
+.DS_Store
+*.pdf
+pandoc-header.tex
