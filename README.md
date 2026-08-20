@@ -1,6 +1,6 @@
 # Stimulant–Opioid Comorbidity Study: Replication Code
 
-This folder contains the R code needed to recreate the manuscript tables and the three post hoc sensitivity analyses for deaths occurring during 2015–2024.
+This folder contains the R code needed to recreate the manuscript tables and four post hoc sensitivity analyses for deaths occurring during 2015–2024.
 
 The mortality microdata are not distributed with this repository. Researchers must obtain authorized access to the National Center for Health Statistics Multiple Cause of Death data and prepare the annual input files described below.
 
@@ -68,6 +68,7 @@ The condition table uses short display labels so its first column wraps correctl
 4. `scripts/04_sensitivity_stimulant_class.R` analyzes cocaine and other psychostimulants separately.
 5. `scripts/05_sensitivity_code_definition.R` compares the inclusive and restricted drug-involvement definitions.
 6. `scripts/06_verify_outputs.R` checks that expected files were generated and that every model converged, then writes a local replication manifest.
+7. `scripts/07_sensitivity_alcohol_adjustment.R` compares the primary models with otherwise identical models that add death-certificate alcohol involvement as a covariate.
 
 ## How to read the scripts
 

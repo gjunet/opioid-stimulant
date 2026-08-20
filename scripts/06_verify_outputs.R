@@ -9,7 +9,7 @@
 
 # ---- 1. Confirm that every primary and sensitivity table was created ---------
 source(file.path(publication_root,"R","helpers.R")); log_msg <- new_logger("06_verify_outputs.log")
-expected_files <- c("table1_chang_2015_2024.csv","S1_descriptive_2015_2024.csv","S2_unadjusted_2015_2024.csv","S3_adjusted_2015_2024.csv","S4_pairwise_cardiovascular.csv","S5_pairwise_cerebrovascular.csv","S6_pairwise_other_medical.csv","S7_pairwise_no_additional.csv","eTable_icd10_drug_codes.csv","sensitivity1_period_coefficients.csv","sensitivity1_period_change_tests.csv","sensitivity2_stimulant_class_samples.csv","sensitivity2_stimulant_class_models.csv","sensitivity3_inclusive_restricted_models.csv","sensitivity3_sample_sizes.csv","sensitivity3_outcome_prevalence.csv")
+expected_files <- c("table1_chang_2015_2024.csv","S1_descriptive_2015_2024.csv","S2_unadjusted_2015_2024.csv","S3_adjusted_2015_2024.csv","S4_pairwise_cardiovascular.csv","S5_pairwise_cerebrovascular.csv","S6_pairwise_other_medical.csv","S7_pairwise_no_additional.csv","eTable_icd10_drug_codes.csv","sensitivity1_period_coefficients.csv","sensitivity1_period_change_tests.csv","sensitivity2_stimulant_class_samples.csv","sensitivity2_stimulant_class_models.csv","sensitivity3_inclusive_restricted_models.csv","sensitivity3_sample_sizes.csv","sensitivity3_outcome_prevalence.csv","sensitivity4_alcohol_adjustment_models.csv")
 missing <- expected_files[!file.exists(file.path(table_dir,expected_files))]
 if(length(missing)) stop("Missing expected outputs: ",paste(missing,collapse=", "))
 # ---- 2. Read all diagnostic files and stop after a convergence failure -------
