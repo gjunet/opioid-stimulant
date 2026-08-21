@@ -13,3 +13,4 @@ tmp/
 .RData
 .DS_Store
 *.pdf
+!docs/Supplementary_Appendix.pdf

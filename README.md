@@ -78,6 +78,15 @@ Each numbered script begins with a plain-language statement of its purpose and t
 
 `DATA_DICTIONARY.md` defines every derived exposure, demographic variable, condition indicator, and modeled outcome in plain language.
 
+## Supplementary appendix
+
+The complete publication supplement is available in two formats:
+
+- [`docs/Supplementary_Appendix.md`](docs/Supplementary_Appendix.md), an accessible and version-controlled Markdown source;
+- [`docs/Supplementary_Appendix.pdf`](docs/Supplementary_Appendix.pdf), the formatted publication version.
+
+The supplement contains the data dictionary and all four post hoc sensitivity analyses: calendar period, separate cocaine and other-psychostimulant groups, inclusive versus restricted drug-code definitions, and adjustment for alcohol involvement.
+
 The cause-code searches use regular expressions. After punctuation is removed, `^I6[0-9]`, for example, means that a code starts with I6 and ends that three-character stem with any digit from 0 through 9; this identifies I60-I69 cerebrovascular codes. The comments above `condition_patterns` in Script 01 explain every health-condition domain. A condition flag means that at least one qualifying code was recorded as the underlying or a multiple cause of death. It does not establish onset, severity, or causation by the drug exposure.
 
 The code uses short internal names such as `x`, `dd`, and `fit` only within a small analysis block. In those blocks, `x` or `dd` is the current analysis dataset and `fit` is the fitted logistic regression. Longer-lived objects use descriptive names such as `restricted_group`, `psychostimulant`, and `period`.
