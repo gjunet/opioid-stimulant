@@ -109,7 +109,7 @@ make_or_figure <- function(estimates, reference_group) {
       hjust = 0, color = "black", size = 3.1, show.legend = FALSE
     ) +
     scale_x_log10(limits = c(lower_limit, upper_limit)) +
-    labs(x = "Adjusted odds ratio")
+    labs(x = "Adjusted odds ratio (log scale)")
 }
 
 # ---- 5. Draw the adjusted logit-coefficient version -------------------------
