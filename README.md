@@ -73,7 +73,7 @@ The condition table uses short display labels so its first column wraps correctl
 
 ## Figure 1 outputs
 
-The primary Figure 1 files use stimulant-only deaths as the reference group and are saved as `Figure1_adjusted_odds_ratios.*` and `Figure1_adjusted_logit_coefficients.*`. Companion files ending in `_opioid_reference` reproduce the alternate opioid-only reference specification. Each point is labeled with its estimate and 95% confidence interval. Reference-group and adjustment information appears beneath the plotting area rather than as a title or subtitle.
+The primary Figure 1 files use stimulant-only deaths as the reference group. `Figure1_adjusted_odds_ratios.*` uses the conventional logarithmic OR axis, `Figure1_adjusted_odds_ratios_linear_scale.*` uses an untransformed OR axis beginning at zero, and `Figure1_adjusted_logit_coefficients.*` displays the unexponentiated coefficients. Companion files ending in `_opioid_reference` reproduce the alternate opioid-only reference specification. Each point is labeled with its estimate and 95% confidence interval. Reference-group and adjustment information appears beneath the plotting area rather than as a title or subtitle.
 
 ## How to read the scripts
 

@@ -147,19 +147,58 @@ make_logit_figure <- function(estimates, reference_group) {
     labs(x = "Adjusted logit coefficient")
 }
 
-# ---- 6. Save primary and alternate-reference figures ------------------------
+# ---- 6. Draw an odds-ratio version on an untransformed x-axis ---------------
+# This alternative starts the x-axis at zero and spaces odds ratios linearly.
+# The fitted estimates and confidence intervals are identical to the standard
+# OR figure; only their horizontal positions change. Values below 1 therefore
+# appear compressed relative to values above 1.
+make_or_linear_figure <- function(estimates, reference_group) {
+  plotted_max <- max(estimates$or_ci_high)
+  upper_limit <- plotted_max * 1.42
+  estimates$value_label <- sprintf(
+    "%.2f (%.2f-%.2f)",
+    estimates$odds_ratio, estimates$or_ci_low, estimates$or_ci_high
+  )
+  estimates$label_x <- ifelse(
+    estimates$or_ci_high < 1,
+    1.12,
+    estimates$or_ci_high + 0.055 * plotted_max
+  )
+
+  base_figure(estimates, reference_group) +
+    geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
+    geom_errorbar(
+      aes(xmin = or_ci_low, xmax = or_ci_high),
+      width = 0.18, linewidth = 0.7, orientation = "y"
+    ) +
+    geom_point(aes(x = odds_ratio), size = 2.6) +
+    geom_text(
+      aes(x = label_x, label = value_label),
+      hjust = 0, color = "black", size = 3.1, show.legend = FALSE
+    ) +
+    scale_x_continuous(limits = c(0, upper_limit)) +
+    labs(x = "Adjusted odds ratio (linear scale)")
+}
+
+# ---- 7. Save primary and alternate-reference figures ------------------------
 # PNG files are suitable for manuscript review; SVG files remain editable and
 # scale without loss of resolution. A CSV records every plotted value.
 save_figure_pair <- function(reference_group, suffix) {
   estimates <- figure_estimates(reference_group)
   or_plot <- make_or_figure(estimates, reference_group)
+  or_linear_plot <- make_or_linear_figure(estimates, reference_group)
   logit_plot <- make_logit_figure(estimates, reference_group)
 
   or_stem <- paste0("Figure1_adjusted_odds_ratios", suffix)
+  or_linear_stem <- paste0("Figure1_adjusted_odds_ratios_linear_scale", suffix)
   logit_stem <- paste0("Figure1_adjusted_logit_coefficients", suffix)
   ggsave(file.path(figure_dir, paste0(or_stem, ".png")), or_plot,
          width = 10.5, height = 7.5, dpi = 300)
   ggsave(file.path(figure_dir, paste0(or_stem, ".svg")), or_plot,
+         width = 10.5, height = 7.5)
+  ggsave(file.path(figure_dir, paste0(or_linear_stem, ".png")), or_linear_plot,
+         width = 10.5, height = 7.5, dpi = 300)
+  ggsave(file.path(figure_dir, paste0(or_linear_stem, ".svg")), or_linear_plot,
          width = 10.5, height = 7.5)
   ggsave(file.path(figure_dir, paste0(logit_stem, ".png")), logit_plot,
          width = 10.5, height = 7.5, dpi = 300)
@@ -175,7 +214,7 @@ save_figure_pair <- function(reference_group, suffix) {
     file.path(table_dir, paste0("Figure1_plotted_estimates", suffix, ".csv")),
     row.names = FALSE
   )
-  log_msg("Saved OR and logit Figure 1 files for reference group: ", reference_group)
+  log_msg("Saved log-scale OR, linear-scale OR, and logit Figure 1 files for reference group: ", reference_group)
 }
 
 save_figure_pair("Stimulant-only", "")
