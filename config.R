@@ -19,6 +19,7 @@ raw_dir <- Sys.getenv("STIM_OPIOID_RAW_DIR", file.path(publication_root, "data",
 derived_dir <- Sys.getenv("STIM_OPIOID_DERIVED_DIR", file.path(publication_root, "data", "derived"))
 output_dir <- Sys.getenv("STIM_OPIOID_OUTPUT_DIR", file.path(publication_root, "output"))
 table_dir <- file.path(output_dir, "tables")
+figure_dir <- file.path(output_dir, "figures")
 diagnostic_dir <- file.path(output_dir, "diagnostics")
 log_dir <- file.path(publication_root, "logs")
 # Fixed manuscript study period and required annual filename pattern.
@@ -29,5 +30,6 @@ analytic_path <- file.path(derived_dir, "stim_opioid_analysis_2015_2024.rds")
 # write to the source mortality files.
 dir.create(derived_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(table_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(figure_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(diagnostic_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(log_dir, recursive = TRUE, showWarnings = FALSE)
