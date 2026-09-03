@@ -2,10 +2,9 @@
 # SCRIPT 08: FIGURE 1 FOREST PLOTS
 #
 # This script recreates Figure 1 from the adjusted logistic regression models.
-# It makes one version on the odds-ratio scale and one on the unexponentiated
-# logit-coefficient scale. Point labels report the estimate and its 95%
-# confidence interval. The figure has no title; the reference group, adjustment
-# set, and data-access statement appear below the graph.
+# It displays adjusted odds ratios on a logarithmic x-axis. Point labels report
+# the odds ratio and its 95% confidence interval. The figure has no title; the
+# reference group, adjustment set, and data-access statement appear below it.
 #
 # The manuscript models use stimulant-only deaths as the reference group. For
 # transparency, the script also creates companion figures with opioid-only
@@ -23,9 +22,9 @@ log_msg <- new_logger("08_figure1_forest_plots.log")
 d <- readRDS(analytic_path)
 
 # ---- 2. Extract the two drug-group contrasts for each outcome ---------------
-# Coefficients are taken directly from the same adjusted logistic models used
-# for the manuscript tables. Wald 95% confidence intervals are shown on both
-# scales; odds ratios and their intervals are exponentiated coefficients.
+# Odds ratios are taken directly from the same adjusted logistic models used
+# for the manuscript tables. The plotted Wald 95% confidence intervals are
+# exponentiated coefficient intervals.
 figure_estimates <- function(reference_group) {
   x <- prepare_model_data(d, d$comparison_group)
   x$grp <- relevel(x$grp, ref = reference_group)
@@ -112,107 +111,29 @@ make_or_figure <- function(estimates, reference_group) {
     labs(x = "Adjusted odds ratio (log scale)")
 }
 
-# ---- 5. Draw the adjusted logit-coefficient version -------------------------
-# These are the unexponentiated coefficients from the adjusted logistic model.
-# Zero marks no difference from the reference group. The point label reports
-# beta (95% CI) on the log-odds scale.
-make_logit_figure <- function(estimates, reference_group) {
-  plotted_min <- min(estimates$beta_ci_low)
-  plotted_max <- max(estimates$beta_ci_high)
-  span <- plotted_max - plotted_min
-  lower_limit <- plotted_min - 0.68 * span
-  upper_limit <- plotted_max + 0.12 * span
-  estimates$value_label <- sprintf(
-    "%.2f (%.2f to %.2f)",
-    estimates$beta, estimates$beta_ci_low, estimates$beta_ci_high
-  )
-  estimates$label_x <- lower_limit + 0.03 * span
-
-  base_figure(estimates, reference_group) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
-    geom_errorbar(
-      aes(xmin = beta_ci_low, xmax = beta_ci_high),
-      width = 0.18, linewidth = 0.7, orientation = "y"
-    ) +
-    geom_point(aes(x = beta), size = 2.6) +
-    geom_text(
-      aes(x = label_x, label = value_label),
-      hjust = 0, color = "black", size = 3.1, show.legend = FALSE
-    ) +
-    scale_x_continuous(limits = c(lower_limit, upper_limit)) +
-    labs(x = "Adjusted logit coefficient")
-}
-
-# ---- 6. Draw an odds-ratio version on an untransformed x-axis ---------------
-# This alternative starts the x-axis at zero and spaces odds ratios linearly.
-# The fitted estimates and confidence intervals are identical to the standard
-# OR figure; only their horizontal positions change. Values below 1 therefore
-# appear compressed relative to values above 1.
-make_or_linear_figure <- function(estimates, reference_group) {
-  plotted_max <- max(estimates$or_ci_high)
-  upper_limit <- plotted_max * 1.42
-  annotation_gutter <- plotted_max * 0.42
-  estimates$value_label <- sprintf(
-    "%.2f (%.2f-%.2f)",
-    estimates$odds_ratio, estimates$or_ci_low, estimates$or_ci_high
-  )
-  estimates$label_x <- -annotation_gutter * 0.96
-
-  base_figure(estimates, reference_group) +
-    geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
-    geom_errorbar(
-      aes(xmin = or_ci_low, xmax = or_ci_high),
-      width = 0.18, linewidth = 0.7, orientation = "y"
-    ) +
-    geom_point(aes(x = odds_ratio), size = 2.6) +
-    geom_text(
-      aes(x = label_x, label = value_label),
-      hjust = 0, color = "black", size = 3.1, show.legend = FALSE
-    ) +
-    scale_x_continuous(
-      limits = c(-annotation_gutter, upper_limit),
-      breaks = pretty(c(0, upper_limit))[
-        pretty(c(0, upper_limit)) >= 0 & pretty(c(0, upper_limit)) <= upper_limit
-      ]
-    ) +
-    labs(x = "Adjusted odds ratio (linear scale)")
-}
-
-# ---- 7. Save primary and alternate-reference figures ------------------------
+# ---- 5. Save primary and alternate-reference figures ------------------------
 # PNG files are suitable for manuscript review; SVG files remain editable and
 # scale without loss of resolution. A CSV records every plotted value.
 save_figure_pair <- function(reference_group, suffix) {
   estimates <- figure_estimates(reference_group)
   or_plot <- make_or_figure(estimates, reference_group)
-  or_linear_plot <- make_or_linear_figure(estimates, reference_group)
-  logit_plot <- make_logit_figure(estimates, reference_group)
 
   or_stem <- paste0("Figure1_adjusted_odds_ratios", suffix)
-  or_linear_stem <- paste0("Figure1_adjusted_odds_ratios_linear_scale", suffix)
-  logit_stem <- paste0("Figure1_adjusted_logit_coefficients", suffix)
   ggsave(file.path(figure_dir, paste0(or_stem, ".png")), or_plot,
          width = 10.5, height = 7.5, dpi = 300)
   ggsave(file.path(figure_dir, paste0(or_stem, ".svg")), or_plot,
          width = 10.5, height = 7.5)
-  ggsave(file.path(figure_dir, paste0(or_linear_stem, ".png")), or_linear_plot,
-         width = 10.5, height = 7.5, dpi = 300)
-  ggsave(file.path(figure_dir, paste0(or_linear_stem, ".svg")), or_linear_plot,
-         width = 10.5, height = 7.5)
-  ggsave(file.path(figure_dir, paste0(logit_stem, ".png")), logit_plot,
-         width = 10.5, height = 7.5, dpi = 300)
-  ggsave(file.path(figure_dir, paste0(logit_stem, ".svg")), logit_plot,
-         width = 10.5, height = 7.5)
 
   plotted_values <- estimates[, c(
-    "outcome", "contrast", "beta", "beta_ci_low", "beta_ci_high",
-    "odds_ratio", "or_ci_low", "or_ci_high", "p_value", "model_n"
+    "outcome", "contrast", "odds_ratio", "or_ci_low", "or_ci_high",
+    "p_value", "model_n"
   )]
   write.csv(
     plotted_values,
     file.path(table_dir, paste0("Figure1_plotted_estimates", suffix, ".csv")),
     row.names = FALSE
   )
-  log_msg("Saved log-scale OR, linear-scale OR, and logit Figure 1 files for reference group: ", reference_group)
+  log_msg("Saved log-scale OR Figure 1 files for reference group: ", reference_group)
 }
 
 save_figure_pair("Stimulant-only", "")

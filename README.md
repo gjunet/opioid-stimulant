@@ -69,11 +69,11 @@ The condition table uses short display labels so its first column wraps correctl
 5. `scripts/05_sensitivity_code_definition.R` compares the inclusive and restricted drug-involvement definitions.
 6. `scripts/06_verify_outputs.R` checks that expected files were generated and that every model converged, then writes a local replication manifest.
 7. `scripts/07_sensitivity_alcohol_adjustment.R` compares the primary models with otherwise identical models that add death-certificate alcohol involvement as a covariate.
-8. `scripts/08_figure1_forest_plots.R` creates Figure 1 on both the adjusted odds-ratio and logit-coefficient scales. It also creates companion versions with opioid-only deaths as the reference group.
+8. `scripts/08_figure1_forest_plots.R` creates Figure 1 with adjusted odds ratios on a logarithmic axis. It also creates a companion version with opioid-only deaths as the reference group.
 
 ## Figure 1 outputs
 
-The primary Figure 1 files use stimulant-only deaths as the reference group. `Figure1_adjusted_odds_ratios.*` uses the conventional logarithmic OR axis, `Figure1_adjusted_odds_ratios_linear_scale.*` uses an untransformed OR axis beginning at zero, and `Figure1_adjusted_logit_coefficients.*` displays the unexponentiated coefficients. Companion files ending in `_opioid_reference` reproduce the alternate opioid-only reference specification. Each point is labeled with its estimate and 95% confidence interval. Reference-group and adjustment information appears beneath the plotting area rather than as a title or subtitle.
+The primary Figure 1 files use stimulant-only deaths as the reference group. `Figure1_adjusted_odds_ratios.*` displays adjusted odds ratios on a logarithmic axis. Companion files ending in `_opioid_reference` use opioid-only deaths as the reference group. Each point is labeled with its odds ratio and 95% confidence interval. Reference-group and adjustment information appears beneath the plotting area rather than as a title or subtitle.
 
 ## How to read the scripts
 
