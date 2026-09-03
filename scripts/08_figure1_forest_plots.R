@@ -48,8 +48,9 @@ figure_estimates <- function(reference_group) {
 
 # ---- 3. Apply a common publication style -----------------------------------
 # Color and point shape both identify the comparison so the figure remains
-# interpretable in grayscale. Labels are aligned at the right edge of each
-# panel, leaving the point and confidence interval unobstructed.
+# interpretable in grayscale. Estimate labels occupy a dedicated annotation
+# area at the left of each panel, leaving the point and confidence interval
+# unobstructed.
 comparison_colors <- c("#0072B2", "#D55E00")
 comparison_shapes <- c(16, 17)
 data_caption <- paste0(
@@ -85,17 +86,13 @@ base_figure <- function(estimates, reference_group) {
 # The odds-ratio axis is logarithmic, with 1 marking no difference from the
 # reference group. The point label reports OR (95% CI).
 make_or_figure <- function(estimates, reference_group) {
-  lower_limit <- min(estimates$or_ci_low) * 0.75
+  lower_limit <- min(estimates$or_ci_low) / 8
   upper_limit <- max(estimates$or_ci_high) * 2.7
   estimates$value_label <- sprintf(
     "%.2f (%.2f-%.2f)",
     estimates$odds_ratio, estimates$or_ci_low, estimates$or_ci_high
   )
-  estimates$label_x <- ifelse(
-    estimates$or_ci_high < 1,
-    1.25,
-    estimates$or_ci_high * 1.16
-  )
+  estimates$label_x <- lower_limit * 1.15
 
   base_figure(estimates, reference_group) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
@@ -108,7 +105,10 @@ make_or_figure <- function(estimates, reference_group) {
       aes(x = label_x, label = value_label),
       hjust = 0, color = "black", size = 3.1, show.legend = FALSE
     ) +
-    scale_x_log10(limits = c(lower_limit, upper_limit)) +
+    scale_x_log10(
+      limits = c(lower_limit, upper_limit),
+      breaks = c(0.1, 0.3, 1, 3, 10, 30)
+    ) +
     labs(x = "Adjusted odds ratio (log scale)")
 }
 
@@ -120,17 +120,13 @@ make_logit_figure <- function(estimates, reference_group) {
   plotted_min <- min(estimates$beta_ci_low)
   plotted_max <- max(estimates$beta_ci_high)
   span <- plotted_max - plotted_min
-  lower_limit <- plotted_min - 0.08 * span
-  upper_limit <- plotted_max + 0.58 * span
+  lower_limit <- plotted_min - 0.68 * span
+  upper_limit <- plotted_max + 0.12 * span
   estimates$value_label <- sprintf(
     "%.2f (%.2f to %.2f)",
     estimates$beta, estimates$beta_ci_low, estimates$beta_ci_high
   )
-  estimates$label_x <- ifelse(
-    estimates$beta_ci_high < 0,
-    0.30,
-    estimates$beta_ci_high + 0.08 * span
-  )
+  estimates$label_x <- lower_limit + 0.03 * span
 
   base_figure(estimates, reference_group) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
@@ -155,15 +151,12 @@ make_logit_figure <- function(estimates, reference_group) {
 make_or_linear_figure <- function(estimates, reference_group) {
   plotted_max <- max(estimates$or_ci_high)
   upper_limit <- plotted_max * 1.42
+  annotation_gutter <- plotted_max * 0.42
   estimates$value_label <- sprintf(
     "%.2f (%.2f-%.2f)",
     estimates$odds_ratio, estimates$or_ci_low, estimates$or_ci_high
   )
-  estimates$label_x <- ifelse(
-    estimates$or_ci_high < 1,
-    1.12,
-    estimates$or_ci_high + 0.055 * plotted_max
-  )
+  estimates$label_x <- -annotation_gutter * 0.96
 
   base_figure(estimates, reference_group) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
@@ -176,7 +169,12 @@ make_or_linear_figure <- function(estimates, reference_group) {
       aes(x = label_x, label = value_label),
       hjust = 0, color = "black", size = 3.1, show.legend = FALSE
     ) +
-    scale_x_continuous(limits = c(0, upper_limit)) +
+    scale_x_continuous(
+      limits = c(-annotation_gutter, upper_limit),
+      breaks = pretty(c(0, upper_limit))[
+        pretty(c(0, upper_limit)) >= 0 & pretty(c(0, upper_limit)) <= upper_limit
+      ]
+    ) +
     labs(x = "Adjusted odds ratio (linear scale)")
 }
 
