@@ -53,9 +53,8 @@ figure_estimates <- function(reference_group) {
 comparison_colors <- c("#0072B2", "#D55E00")
 comparison_shapes <- c(16, 17)
 data_caption <- paste0(
-  "Point labels show the estimate (95% CI).\n",
-  "Models adjusted for age, sex, race, and Hispanic origin.\n",
-  "Data accessed through the National Center for Health Statistics Research Data Center."
+  "Point labels show the estimate (95% CI). Data accessed through the ",
+  "National Center for Health Statistics Research Data Center."
 )
 
 base_figure <- function(estimates, reference_group) {
@@ -65,14 +64,18 @@ base_figure <- function(estimates, reference_group) {
     scale_shape_manual(values = comparison_shapes, guide = "none") +
     labs(
       y = NULL,
-      caption = paste0("Reference group: ", reference_group, " deaths.\n", data_caption)
+      caption = paste0(
+        "Reference group: ", reference_group,
+        " deaths. Adjusted for age, sex, race, and Hispanic origin.\n",
+        data_caption
+      )
     ) +
     theme_minimal(base_size = 11) +
     theme(
       panel.grid.major.y = element_blank(),
       panel.grid.minor = element_blank(),
       strip.text = element_text(face = "bold"),
-      plot.caption = element_text(size = 8.5, hjust = 0),
+      plot.caption = element_text(size = 8.5, hjust = 0.5),
       plot.caption.position = "plot",
       plot.margin = margin(8, 12, 8, 8)
     )
@@ -106,7 +109,7 @@ make_or_figure <- function(estimates, reference_group) {
       hjust = 0, color = "black", size = 3.1, show.legend = FALSE
     ) +
     scale_x_log10(limits = c(lower_limit, upper_limit)) +
-    labs(x = "Adjusted odds ratio (log scale)")
+    labs(x = "Adjusted odds ratio")
 }
 
 # ---- 5. Draw the adjusted logit-coefficient version -------------------------
@@ -155,13 +158,13 @@ save_figure_pair <- function(reference_group, suffix) {
   or_stem <- paste0("Figure1_adjusted_odds_ratios", suffix)
   logit_stem <- paste0("Figure1_adjusted_logit_coefficients", suffix)
   ggsave(file.path(figure_dir, paste0(or_stem, ".png")), or_plot,
-         width = 9, height = 7.5, dpi = 300)
+         width = 10.5, height = 7.5, dpi = 300)
   ggsave(file.path(figure_dir, paste0(or_stem, ".svg")), or_plot,
-         width = 9, height = 7.5)
+         width = 10.5, height = 7.5)
   ggsave(file.path(figure_dir, paste0(logit_stem, ".png")), logit_plot,
-         width = 9, height = 7.5, dpi = 300)
+         width = 10.5, height = 7.5, dpi = 300)
   ggsave(file.path(figure_dir, paste0(logit_stem, ".svg")), logit_plot,
-         width = 9, height = 7.5)
+         width = 10.5, height = 7.5)
 
   plotted_values <- estimates[, c(
     "outcome", "contrast", "beta", "beta_ci_low", "beta_ci_high",
